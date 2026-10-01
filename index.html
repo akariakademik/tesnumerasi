@@ -239,40 +239,64 @@
             // Ubah tampilan tombol saat diklik agar user tahu sedang diproses
             btnSubmit.disabled = true;
             btnText.innerText = 'Menyimpan Data...';
-            btnIcon.style.display = 'none'; // Sembunyikan ikon panah saat loading
+            btnIcon.style.display = 'none';
 
             // -------------------------------------------------------------
-            // URL Google Apps Script (GANTI TEXT DI BAWAH DENGAN URL ASLI KAMU NANTI)
+            // URL Google Apps Script (GANTI TEXT DI BAWAH DENGAN URL ASLI KAMU)
             // -------------------------------------------------------------
             const scriptURL = 'https://script.google.com/macros/s/AKfycbwsPhDHFA9K6SgM7yXYeuqAQVrZyoL6o1aFRE4ovQb1SKWH5e3lNoILr-iBR2goC5vB/exec'; 
             
-            const form = document.forms['formBiodata'];
-            const formData = new FormData(form);
+            // Mengambil nilai dari masing-masing input form
+            const namaVal = document.getElementById('nama').value;
+            const kelasVal = document.getElementById('kelas').value;
+            const asalSekolahVal = document.getElementById('asalSekolah').value;
+            const hpOrtuVal = document.getElementById('hpOrtu').value;
+            const hpPribadiVal = document.getElementById('hpPribadi').value;
+            const emailVal = document.getElementById('email').value;
 
-            // Kode Fetch (Hapus tanda komentar /* dan */ di bawah jika scriptURL sudah siap)
-            /*
-            fetch(scriptURL, { method: 'POST', body: formData })
-                .then(response => {
-                    // Jika sukses menyimpan, arahkan ke halaman tes (halaman 2)
-                    window.location.href = 'halaman2.html';
-                })
-                .catch(error => {
-                    // Jika gagal, tampilkan pesan di tombol dan kembalikan ke semula
-                    btnText.innerText = 'Gagal menyimpan, Coba lagi!';
-                    setTimeout(() => {
-                        btnSubmit.disabled = false;
-                        btnText.innerText = 'Lanjut ke Tes Numerasi';
-                        btnIcon.style.display = 'block';
-                    }, 3000);
-                });
-            */
+            // Membuat struktur JSON persis seperti yang diminta Apps Script kamu
+            const payload = {
+                action: 'simpanBiodata',
+                data: {
+                    timestamp: new Date().toLocaleString('id-ID'), // Membuat timestamp otomatis
+                    nama: namaVal,
+                    kelas: kelasVal,
+                    asal_sekolah: asalSekolahVal, // Disesuaikan dengan variabel di GAS
+                    hp_ortu: hpOrtuVal,           // Disesuaikan dengan variabel di GAS
+                    hp_pribadi: hpPribadiVal,     // Disesuaikan dengan variabel di GAS
+                    email: emailVal
+                }
+            };
 
-            // Untuk sementara, kita gunakan simulasi (timer 1.5 detik) agar saat diuji coba
-            // halamannya otomatis berpindah ke Halaman 2 (halaman2.html)
-            setTimeout(() => {
-                // Berpindah ke Halaman 2
-                window.location.href = 'halaman2.html';
-            }, 1500); 
+            // Mengirim data JSON ke Google Apps Script
+            fetch(scriptURL, { 
+                method: 'POST', 
+                // Menggunakan text/plain untuk menghindari error CORS Preflight dari browser
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(payload) 
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Jika dari GAS merespon 'success', maka arahkan ke halaman 2
+                    window.location.href = 'halaman2.html'; 
+                } else {
+                    throw new Error("Respon bukan success");
+                }
+            })
+            .catch(error => {
+                // Jika gagal, tampilkan pesan di tombol dan kembalikan ke semula
+                console.error('Error!', error.message);
+                btnText.innerText = 'Gagal menyimpan, Coba lagi!';
+                
+                setTimeout(() => {
+                    btnSubmit.disabled = false;
+                    btnText.innerText = 'Lanjut ke Tes Numerasi';
+                    btnIcon.style.display = 'block';
+                }, 3000);
+            });
         });
     </script>
 </body>
