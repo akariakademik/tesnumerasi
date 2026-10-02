@@ -244,7 +244,7 @@
             // -------------------------------------------------------------
             // URL Google Apps Script (GANTI TEXT DI BAWAH DENGAN URL ASLI KAMU)
             // -------------------------------------------------------------
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbzq0ecLYuv81wLMeecTc1wGJ12toeWiRnHiScJwQ6d1C_X221JpJet-Q-xQUCK0RtZk/exec'; 
+            const scriptURL = 'URL_WEB_APP_APPS_SCRIPT_KAMU_DISINI'; 
             
             // Mengambil nilai dari masing-masing input form
             const namaVal = document.getElementById('nama').value;
@@ -267,6 +267,10 @@
                     email: emailVal
                 }
             };
+
+            // TAMBAHKAN 2 BARIS INI UNTUK MENYIMPAN NAMA KE HALAMAN 2
+            localStorage.setItem('akari_nama', namaVal);
+            localStorage.setItem('akari_kelas', kelasVal);
 
             // Mengirim data JSON ke Google Apps Script
             fetch(scriptURL, { 
